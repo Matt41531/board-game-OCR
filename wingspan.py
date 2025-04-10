@@ -2,6 +2,11 @@ import cv2
 import pytesseract
 import numpy as np
 import os
+import re
+import sys
+import json
+from datetime import datetime
+from collections import Counter
 
 def ensure_output_dir():
     """Create the output directory if it doesn't exist"""
@@ -16,6 +21,97 @@ def get_output_path(image_path, suffix):
     base_name = os.path.basename(image_path)
     name_without_ext = os.path.splitext(base_name)[0]
     return os.path.join(output_dir, f"{name_without_ext}_{suffix}.jpg")
+
+def check_template_files():
+    """Check if all required template files exist"""
+    templates = [
+        "egg_template.jpg",
+        "wheat_template.jpg",
+        "worm_template.jpg",
+        "fruit_template.jpg",
+        "fish_template.jpg",
+        "wetland_template.jpg",
+        "prairie_template.jpg",
+        "forest_template.jpg"
+    ]
+    
+    missing_templates = []
+    for template in templates:
+        if not os.path.exists(template):
+            missing_templates.append(template)
+    
+    if missing_templates:
+        print(f"WARNING: The following template files are missing: {', '.join(missing_templates)}")
+        print("Template detection may not work correctly.")
+    
+    return len(missing_templates) == 0
+
+def split_grid_image(grid_image_path):
+    """
+    Split a grid image of cards (6 wide x 4 high) into individual card images
+    Each card is expected to be approximately 672px wide by 1018px high
+    
+    Args:
+        grid_image_path: Path to the grid image
+        
+    Returns:
+        List of paths to individual card images
+    """
+    # Read the grid image
+    grid_image = cv2.imread(grid_image_path)
+    if grid_image is None:
+        raise ValueError(f"Could not read image at {grid_image_path}")
+    
+    # Get the dimensions of the grid image
+    height, width = grid_image.shape[:2]
+    
+    # Define grid dimensions
+    grid_width = 6
+    grid_height = 4
+    
+    # Calculate card dimensions based on the image size
+    card_width = width // grid_width
+    card_height = height // grid_height
+    
+    print(f"Grid image dimensions: {width}x{height}")
+    print(f"Calculated card dimensions: {card_width}x{card_height}")
+    
+    # Create output directory for individual cards
+    output_dir = ensure_output_dir()
+    base_name = os.path.basename(grid_image_path)
+    name_without_ext = os.path.splitext(base_name)[0]
+    
+    # List to store paths of extracted card images
+    card_image_paths = []
+    
+    # Extract each card from the grid
+    for row in range(grid_height):
+        for col in range(grid_width):
+            # Calculate coordinates for this card
+            x = col * card_width
+            y = row * card_height
+            
+            # Make sure we're not exceeding the image dimensions
+            if x + card_width > width or y + card_height > height:
+                print(f"Warning: Card at position ({row}, {col}) exceeds image boundaries")
+                continue
+            
+            # Extract the card image
+            card_image = grid_image[y:y+card_height, x:x+card_width]
+            
+            # Generate a path for this card
+            card_path = os.path.join(output_dir, f"{name_without_ext}_card_r{row}_c{col}.jpg")
+            
+            # Save the card image
+            cv2.imwrite(card_path, card_image)
+            
+            # Add the path to our list
+            card_image_paths.append(card_path)
+            
+            print(f"Extracted card at position ({row}, {col})")
+    
+    print(f"Extracted {len(card_image_paths)} cards from grid image")
+    return card_image_paths
 
 def preprocess_image(image_path):
     image = cv2.imread(image_path)
@@ -46,10 +142,6 @@ def detect_victory_points(image_path):
     # Extract the region of interest
     roi = image[y_start:y_end, x_start:x_end]
     
-    # Save ROI for debugging
-    roi_path = get_output_path(image_path, "vp_roi")
-    cv2.imwrite(roi_path, roi)
-    
     # Convert to grayscale
     gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
     
@@ -57,10 +149,6 @@ def detect_victory_points(image_path):
     _, thresh = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY_INV)
     kernel = np.ones((2, 2), np.uint8)
     thresh = cv2.dilate(thresh, kernel, iterations=1)
-    
-    # Save processed image for debugging
-    thresh_path = get_output_path(image_path, "vp_thresh")
-    cv2.imwrite(thresh_path, thresh)
     
     # Dictionary to track which method produced which result
     detection_methods = {}
@@ -111,7 +199,6 @@ def detect_victory_points(image_path):
     vp = ''
     successful_method = "None"
     if vp_candidates:
-        from collections import Counter
         counter = Counter(vp_candidates)
         most_common = counter.most_common(1)[0][0]
         vp = most_common
@@ -155,8 +242,6 @@ def detect_victory_points(image_path):
         'method': successful_method,
         'candidates': dict(Counter(vp_candidates)),
         'white_pixel_ratio': white_pixels / total_pixels if 'total_pixels' in locals() else None,
-        'roi_path': roi_path,
-        'thresh_path': thresh_path
     }
     
     return vp, output_path, debug_info
@@ -427,25 +512,77 @@ def detect_habitats(image_path):
     return habitats, output_path
 
 def process_card(image_path):
+    """
+    Process a single card image and detect its information
+    
+    Args:
+        image_path: Path to the card image
+        
+    Returns:
+        Dictionary with detected card information
+    """
     # Ensure output directory exists
     ensure_output_dir()
     
-    victory_points, vp_output_image, vp_debug_info = detect_victory_points(image_path)
-    eggs, eggs_output_image = detect_eggs(image_path)
-    food_requirements, food_output_image = detect_food(image_path)
-    habitats, habitats_output_image = detect_habitats(image_path)
-    text = extract_text(image_path)
+    print(f"Processing card: {os.path.basename(image_path)}")
     
-    # Create a summary image with all detections
-    original = cv2.imread(image_path)
-    summary_path = get_output_path(image_path, "summary")
-    cv2.putText(original, f"VP: {victory_points}, Eggs: {eggs}", (10, 30),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-    cv2.putText(original, f"Food: {food_requirements}", (10, 60),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-    cv2.putText(original, f"Habitats: {habitats}", (10, 90),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
-    cv2.imwrite(summary_path, original)
+    try:
+        victory_points, vp_output_image, vp_debug_info = detect_victory_points(image_path)
+        print(f"  Detected victory points: {victory_points}")
+    except Exception as e:
+        print(f"  Error detecting victory points: {str(e)}")
+        victory_points = "Error"
+        vp_debug_info = {"error": str(e)}
+        vp_output_image = None
+    
+    try:
+        eggs, eggs_output_image = detect_eggs(image_path)
+        print(f"  Detected eggs: {eggs}")
+    except Exception as e:
+        print(f"  Error detecting eggs: {str(e)}")
+        eggs = 0
+        eggs_output_image = None
+    
+    try:
+        food_requirements, food_output_image = detect_food(image_path)
+        print(f"  Detected food requirements: {food_requirements}")
+    except Exception as e:
+        print(f"  Error detecting food: {str(e)}")
+        food_requirements = {}
+        food_output_image = None
+    
+    try:
+        habitats, habitats_output_image = detect_habitats(image_path)
+        print(f"  Detected habitats: {habitats}")
+    except Exception as e:
+        print(f"  Error detecting habitats: {str(e)}")
+        habitats = {"wetland": False, "prairie": False, "forest": False}
+        habitats_output_image = None
+    
+    try:
+        text = extract_text(image_path)
+        # Only print the first 50 characters of text to keep output clean
+        print(f"  Extracted text sample: {text[:50]}...")
+    except Exception as e:
+        print(f"  Error extracting text: {str(e)}")
+        text = ""
+    
+    # Create a summary image with all detections if possible
+    try:
+        original = cv2.imread(image_path)
+        summary_path = get_output_path(image_path, "summary")
+        cv2.putText(original, f"VP: {victory_points}, Eggs: {eggs}", (10, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+        cv2.putText(original, f"Food: {food_requirements}", (10, 60),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+        cv2.putText(original, f"Habitats: {habitats}", (10, 90),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
+        cv2.imwrite(summary_path, original)
+    except Exception as e:
+        print(f"  Error creating summary image: {str(e)}")
+        summary_path = None
+    
+    print(f"  Completed processing card: {os.path.basename(image_path)}")
     
     return {
         'victory_points': victory_points,
@@ -457,7 +594,165 @@ def process_card(image_path):
         'summary_image': summary_path
     }
 
+def process_grid(grid_image_path):
+    """
+    Process a grid of cards (6 wide x 4 high) and detect information for each card
+    
+    Args:
+        grid_image_path: Path to the grid image
+        
+    Returns:
+        Dictionary mapping card positions to their processed information
+    """
+    # Split the grid image into individual card images
+    print("Splitting grid image into individual cards...")
+    card_image_paths = split_grid_image(grid_image_path)
+    
+    # Process each card and store the results
+    results = {}
+    print("\nProcessing individual cards:")
+    print("----------------------------")
+    
+    for i, card_path in enumerate(card_image_paths):
+        # Extract row and column from the filename
+        filename = os.path.basename(card_path)
+        
+        # Progress indicator
+        print(f"\nCard {i+1} of {len(card_image_paths)}: {filename}")
+        
+        try:
+            # Extract row and column using regex for more reliable parsing
+            match = re.search(r'card_r(\d+)_c(\d+)', filename)
+            if match:
+                row_idx = int(match.group(1))
+                col_idx = int(match.group(2))
+                
+                # Process the card
+                card_result = process_card(card_path)
+                
+                # Store the result with position information
+                position_key = f"row_{row_idx}_col_{col_idx}"
+                results[position_key] = {
+                    'position': {'row': row_idx, 'column': col_idx},
+                    'card_image_path': card_path,
+                    'data': card_result
+                }
+                print(f"Successfully processed card at position ({row_idx}, {col_idx})")
+            else:
+                print(f"Could not extract row and column from filename: {filename}")
+        except Exception as e:
+            print(f"Error processing card {filename}: {str(e)}")
+    
+    print("\nCompleted processing all cards")
+    return results
+
+def save_results_to_json(results, image_path):
+    """
+    Save processing results to a JSON file
+    
+    Args:
+        results: Dictionary of processing results
+        image_path: Path to the original image
+        
+    Returns:
+        Path to the JSON file
+    """
+    output_dir = ensure_output_dir()
+    base_name = os.path.basename(image_path)
+    name_without_ext = os.path.splitext(base_name)[0]
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+    # Create a serializable copy of the results
+    serializable_results = {}
+    for position, card_data in results.items():
+        # Convert numpy values to native Python types where needed
+        serializable_card = {
+            'position': card_data['position'],
+            'card_image_path': card_data['card_image_path'],
+            'data': {}
+        }
+        
+        data = card_data['data']
+        serializable_card['data'] = {
+            'victory_points': data['victory_points'],
+            'egg_count': int(data['egg_count']),
+            'food_requirements': {k: int(v) for k, v in data['food_requirements'].items()},
+            'habitats': {k: bool(v) for k, v in data['habitats'].items()},
+            # Truncate text to avoid huge JSON files
+            'extracted_text': data['extracted_text'][:500] if data['extracted_text'] else "",
+            'summary_image': data['summary_image']
+        }
+        
+        # Remove non-serializable objects from vp_debug_info
+        if 'vp_debug_info' in data:
+            debug_info = {}
+            for k, v in data['vp_debug_info'].items():
+                if isinstance(v, (dict, list, str, int, float, bool, type(None))):
+                    debug_info[k] = v
+                else:
+                    debug_info[k] = str(v)
+            serializable_card['data']['vp_debug_info'] = debug_info
+        
+        serializable_results[position] = serializable_card
+    
+    # Save to JSON file
+    json_path = os.path.join(output_dir, f"{name_without_ext}_results_{timestamp}.json")
+    with open(json_path, 'w') as f:
+        json.dump(serializable_results, f, indent=2)
+    
+    print(f"Saved results to {json_path}")
+    return json_path
+
 if __name__ == "__main__":
-    image_path = "Common Little Bittern.jpg"  # Change as needed
-    result = process_card(image_path)
-    print(result)
+    # Check if we're processing a single card or a grid
+    if len(sys.argv) < 2:
+        print("Usage: python wingspan.py <image_path> [--grid]")
+        sys.exit(1)
+    
+    # Check for template files
+    all_templates_exist = check_template_files()
+    if not all_templates_exist:
+        print("Continuing, but some detections may not work correctly.")
+    
+    image_path = sys.argv[1]
+    is_grid = False
+    
+    if len(sys.argv) > 2 and sys.argv[2] == "--grid":
+        is_grid = True
+    
+    try:
+        if is_grid:
+            print("\n=========================================")
+            print("Processing grid of cards...")
+            print("=========================================\n")
+            result = process_grid(image_path)
+            
+            # Save results to JSON
+            json_path = save_results_to_json(result, image_path)
+            
+            print("\n=========================================")
+            print(f"SUMMARY: Processed {len(result)} cards from grid")
+            print(f"Complete results saved to: {json_path}")
+            print("=========================================\n")
+            
+            # Print a brief summary of each card
+            for position, card_data in result.items():
+                print(f"{position}:")
+                print(f"  Victory Points: {card_data['data']['victory_points']}")
+                print(f"  Eggs: {card_data['data']['egg_count']}")
+                print(f"  Food: {card_data['data']['food_requirements']}")
+                print(f"  Habitats: {card_data['data']['habitats']}")
+                print("")
+        else:
+            print("Processing single card...")
+            result = process_card(image_path)
+            print("\nFinal Results:")
+            print(f"Victory Points: {result['victory_points']}")
+            print(f"Eggs: {result['egg_count']}")
+            print(f"Food Requirements: {result['food_requirements']}")
+            print(f"Habitats: {result['habitats']}")
+    except Exception as e:
+        print(f"Error processing image: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
