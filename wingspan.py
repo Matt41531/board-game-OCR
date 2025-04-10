@@ -515,6 +515,70 @@ def detect_habitats(image_path):
     
     return habitats, output_path
 
+def extract_bird_name(image_path):
+    """
+    Extract the bird name from a card image by focusing on the name region
+    
+    Args:
+        image_path: Path to the card image
+        
+    Returns:
+        String containing the extracted bird name
+    """
+    image = cv2.imread(image_path)
+    if image is None:
+        raise ValueError(f"Could not read image at {image_path}")
+    
+    # Get image dimensions
+    height, width = image.shape[:2]
+    
+    # Define the region of interest for the bird name
+    # The name appears in the top-right area of the card
+    # Approximate coordinates (may need tuning for different card formats)
+    x_start = int(width * 0.38)
+    x_end = int(width * 0.95)
+    y_start = int(height * 0.05)
+    y_end = int(height * 0.10)
+    
+    # Extract the region containing the name
+    name_roi = image[y_start:y_end, x_start:x_end]
+    
+    # Create an output path for debugging
+    output_dir = ensure_output_dir()
+    base_name = os.path.basename(image_path)
+    name_without_ext = os.path.splitext(base_name)[0]
+    roi_output_path = os.path.join(output_dir, f"{name_without_ext}_name_roi.jpg")
+    cv2.imwrite(roi_output_path, name_roi)
+    
+    # Convert to grayscale
+    gray = cv2.cvtColor(name_roi, cv2.COLOR_BGR2GRAY)
+    
+    # Apply thresholding to isolate the dark text
+    _, thresh = cv2.threshold(gray, 120, 255, cv2.THRESH_BINARY_INV)
+    
+    # Apply some preprocessing to make the text clearer
+    kernel = np.ones((1, 1), np.uint8)
+    thresh = cv2.dilate(thresh, kernel, iterations=1)
+    
+    # Save the preprocessed image for debugging
+    thresh_output_path = os.path.join(output_dir, f"{name_without_ext}_name_thresh.jpg")
+    cv2.imwrite(thresh_output_path, thresh)
+    
+    # Use Tesseract with specific configuration for all caps text
+    custom_config = '--psm 7 --oem 3'  # PSM 7 assumes a single line of text
+    bird_name = pytesseract.image_to_string(thresh, config=custom_config).strip()
+    
+    # Clean up the extracted name
+    # Remove any non-alphanumeric characters except spaces and apostrophes
+    bird_name = re.sub(r'[^a-zA-Z0-9\s\']', '', bird_name)
+    
+    # Limit to first 3 words (most bird names are 1-3 words)
+    words = bird_name.split()
+    if len(words) > 3:
+        bird_name = ' '.join(words[:3])
+    
+    return bird_name, roi_output_path, thresh_output_path
+
 def process_card(image_path):
     """
     Process a single card image and detect its information
@@ -529,6 +593,15 @@ def process_card(image_path):
     ensure_output_dir()
     
     print(f"Processing card: {os.path.basename(image_path)}")
+    
+    try:
+        bird_name, name_roi_path, name_thresh_path = extract_bird_name(image_path)
+        print(f"  Detected bird name: {bird_name}")
+    except Exception as e:
+        print(f"  Error detecting bird name: {str(e)}")
+        bird_name = "Unknown Bird"
+        name_roi_path = None
+        name_thresh_path = None
     
     try:
         victory_points, vp_output_image, vp_debug_info = detect_victory_points(image_path)
@@ -575,11 +648,13 @@ def process_card(image_path):
     try:
         original = cv2.imread(image_path)
         summary_path = get_output_path(image_path, "summary")
-        cv2.putText(original, f"VP: {victory_points}, Eggs: {eggs}", (10, 30),
+        cv2.putText(original, f"Bird: {bird_name}", (10, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 255), 2)
+        cv2.putText(original, f"VP: {victory_points}, Eggs: {eggs}", (10, 60),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-        cv2.putText(original, f"Food: {food_requirements}", (10, 60),
+        cv2.putText(original, f"Food: {food_requirements}", (10, 90),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-        cv2.putText(original, f"Habitats: {habitats}", (10, 90),
+        cv2.putText(original, f"Habitats: {habitats}", (10, 120),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
         cv2.imwrite(summary_path, original)
     except Exception as e:
@@ -589,6 +664,7 @@ def process_card(image_path):
     print(f"  Completed processing card: {os.path.basename(image_path)}")
     
     return {
+        'bird_name': bird_name,
         'victory_points': victory_points,
         'vp_debug_info': vp_debug_info,
         'egg_count': eggs,
@@ -678,6 +754,7 @@ def save_results_to_json(results, image_path):
         
         data = card_data['data']
         serializable_card['data'] = {
+            'bird_name': data.get('bird_name', "Unknown Bird"),
             'victory_points': data['victory_points'],
             'egg_count': int(data['egg_count']),
             'food_requirements': {k: int(v) for k, v in data['food_requirements'].items()},
