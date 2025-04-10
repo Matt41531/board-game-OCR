@@ -30,6 +30,7 @@ def check_template_files():
         "worm_template.jpg",
         "fruit_template.jpg",
         "fish_template.jpg",
+        "wild_template.jpg",
         "wetland_template.jpg",
         "prairie_template.jpg",
         "forest_template.jpg"
@@ -326,6 +327,7 @@ def detect_food(image_path):
     worm_icon = cv2.imread('worm_template.jpg', 0)
     fruit_icon = cv2.imread('fruit_template.jpg', 0)
     fish_icon = cv2.imread('fish_template.jpg', 0)
+    wild_icon = cv2.imread('wild_template.jpg', 0)
     
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     
@@ -334,7 +336,8 @@ def detect_food(image_path):
         'wheat': 0,
         'worm': 0,
         'fruit': 0,
-        'fish': 0
+        'fish': 0,
+        'wild': 0
     }
     
     def detect_food_type(template, food_name, color):
@@ -408,6 +411,7 @@ def detect_food(image_path):
     food_counts['worm'] = detect_food_type(worm_icon, "worm", (0, 255, 255))  # Yellow
     food_counts['fruit'] = detect_food_type(fruit_icon, "fruit", (0, 0, 255))  # Red
     food_counts['fish'] = detect_food_type(fish_icon, "fish", (255, 0, 0))  # Blue
+    food_counts['wild'] = detect_food_type(wild_icon, "wild", (255, 0, 255))  # Magenta
     
     # Save the image with bounding boxes
     output_path = get_output_path(image_path, "food_detected")
