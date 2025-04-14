@@ -15,6 +15,13 @@ def ensure_output_dir():
         os.makedirs(output_dir)
     return output_dir
 
+def ensure_individual_cards_dir():
+    """Create the individual cards directory if it doesn't exist"""
+    output_dir = "wingspan_individual_cards"
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    return output_dir
+
 def get_output_path(image_path, suffix):
     """Generate a path in the output directory with the given suffix"""
     output_dir = ensure_output_dir()
@@ -77,8 +84,9 @@ def split_grid_image(grid_image_path):
     print(f"Grid image dimensions: {width}x{height}")
     print(f"Calculated card dimensions: {card_width}x{card_height}")
     
-    # Create output directory for individual cards
+    # Create output directories
     output_dir = ensure_output_dir()
+    individual_cards_dir = ensure_individual_cards_dir()
     base_name = os.path.basename(grid_image_path)
     name_without_ext = os.path.splitext(base_name)[0]
     
@@ -100,14 +108,28 @@ def split_grid_image(grid_image_path):
             # Extract the card image
             card_image = grid_image[y:y+card_height, x:x+card_width]
             
-            # Generate a path for this card
-            card_path = os.path.join(output_dir, f"{name_without_ext}_card_r{row}_c{col}.jpg")
+            # Generate a temporary path for this card to extract the bird name
+            temp_card_path = os.path.join(output_dir, f"{name_without_ext}_card_r{row}_c{col}.jpg")
+            cv2.imwrite(temp_card_path, card_image)
             
-            # Save the card image
-            cv2.imwrite(card_path, card_image)
+            try:
+                # Extract the bird name
+                bird_name, _, _ = extract_bird_name(temp_card_path)
+                # Replace spaces with underscores and remove any invalid characters
+                safe_bird_name = re.sub(r'[^a-zA-Z0-9_]', '', bird_name.replace(' ', '_'))
+                # Generate the final path with the bird name
+                final_card_path = os.path.join(individual_cards_dir, f"{safe_bird_name}.jpg")
+                # Save the card image with the bird name
+                cv2.imwrite(final_card_path, card_image)
+                print(f"Saved card as: {safe_bird_name}.jpg")
+            except Exception as e:
+                print(f"Error processing card at position ({row}, {col}): {str(e)}")
+                # If we can't get the bird name, use the position-based name
+                final_card_path = os.path.join(individual_cards_dir, f"{name_without_ext}_card_r{row}_c{col}.jpg")
+                cv2.imwrite(final_card_path, card_image)
             
             # Add the path to our list
-            card_image_paths.append(card_path)
+            card_image_paths.append(temp_card_path)
             
             print(f"Extracted card at position ({row}, {col})")
     
@@ -569,6 +591,9 @@ def extract_bird_name(image_path):
     words = bird_name.split()
     if len(words) > 3:
         bird_name = ' '.join(words[:3])
+    
+    # Convert to uppercase
+    bird_name = bird_name.upper()
     
     return bird_name, roi_output_path, thresh_output_path
 
