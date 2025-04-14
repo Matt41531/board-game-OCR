@@ -474,7 +474,7 @@ def detect_habitats(image_path):
     
     def detect_habitat(template, habitat_name, color):
         result = cv2.matchTemplate(gray, template, cv2.TM_CCOEFF_NORMED)
-        threshold = 0.85  # Adjust threshold as needed
+        threshold = 0.75  # Adjust threshold as needed
         locations = np.where(result >= threshold)
         locations = list(zip(*locations[::-1]))  # Convert to list of (x, y) positions
         
