@@ -38,6 +38,7 @@ def check_template_files():
         "fruit_template.jpg",
         "fish_template.jpg",
         "wild_template.jpg",
+        "rat_template.jpg",
         "wetland_template.jpg",
         "prairie_template.jpg",
         "forest_template.jpg"
@@ -115,6 +116,11 @@ def split_grid_image(grid_image_path):
             try:
                 # Extract the bird name
                 bird_name, _, _ = extract_bird_name(temp_card_path)
+                # Skip if bird name is empty or just whitespace
+                if not bird_name or bird_name.isspace():
+                    print(f"Skipping card at position ({row}, {col}) - no bird name detected")
+                    continue
+                    
                 # Replace spaces with underscores and remove any invalid characters
                 safe_bird_name = re.sub(r'[^a-zA-Z0-9_]', '', bird_name.replace(' ', '_'))
                 # Generate the final path with the bird name
@@ -124,9 +130,7 @@ def split_grid_image(grid_image_path):
                 print(f"Saved card as: {safe_bird_name}.jpg")
             except Exception as e:
                 print(f"Error processing card at position ({row}, {col}): {str(e)}")
-                # If we can't get the bird name, use the position-based name
-                final_card_path = os.path.join(individual_cards_dir, f"{name_without_ext}_card_r{row}_c{col}.jpg")
-                cv2.imwrite(final_card_path, card_image)
+                continue
             
             # Add the path to our list
             card_image_paths.append(temp_card_path)
@@ -337,14 +341,28 @@ def detect_eggs(image_path):
 
 def detect_food(image_path):
     image = cv2.imread(image_path)
+    # Get image dimensions
+    height, width = image.shape[:2]
+    
+    # Define the top-left region where food requirements are located
+    roi_width = int(width * 0.40)
+    roi_height = int(height * 0.22)
+    roi = image[0:roi_height, 0:roi_width]
+    
+    # Save the ROI image for debugging
+    roi_output_path = get_output_path(image_path, "food_roi")
+    cv2.imwrite(roi_output_path, roi)
+    
     # Load all food templates
     wheat_icon = cv2.imread('wheat_template.jpg', 0)
     worm_icon = cv2.imread('worm_template.jpg', 0)
     fruit_icon = cv2.imread('fruit_template.jpg', 0)
     fish_icon = cv2.imread('fish_template.jpg', 0)
     wild_icon = cv2.imread('wild_template.jpg', 0)
+    rat_icon = cv2.imread('rat_template.jpg', 0)
     
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # Convert ROI to grayscale
+    gray_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
     
     # Dictionary to store food counts and their locations
     food_counts = {
@@ -352,12 +370,13 @@ def detect_food(image_path):
         'worm': 0,
         'fruit': 0,
         'fish': 0,
-        'wild': 0
+        'wild': 0,
+        'rat': 0
     }
     
     def detect_food_type(template, food_name, color):
-        result = cv2.matchTemplate(gray, template, cv2.TM_CCOEFF_NORMED)
-        threshold = 0.92  # Slightly lower threshold to catch more potential matches
+        result = cv2.matchTemplate(gray_roi, template, cv2.TM_CCOEFF_NORMED)
+        threshold = 0.82  # Slightly lower threshold to catch more potential matches
         locations = np.where(result >= threshold)
         locations = list(zip(*locations[::-1]))  # Convert to list of (x, y) positions
         
@@ -410,13 +429,13 @@ def detect_food(image_path):
             # Get the filtered locations
             filtered_locations = [locations[i] for i in selected_indices]
         
-        # Draw rectangles around each filtered match
+        # Draw rectangles around each filtered match (on the original image)
         for loc in filtered_locations:
-            top_left = loc
+            top_left = loc  # Location is already in ROI coordinates
             bottom_right = (top_left[0] + w, top_left[1] + h)
-            cv2.rectangle(image, top_left, bottom_right, color, 2)
+            cv2.rectangle(roi, top_left, bottom_right, color, 2)
             # Add label
-            cv2.putText(image, food_name, (top_left[0], top_left[1] - 10),
+            cv2.putText(roi, food_name, (top_left[0], top_left[1] - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
         
         return len(filtered_locations)
@@ -427,6 +446,7 @@ def detect_food(image_path):
     food_counts['fruit'] = detect_food_type(fruit_icon, "fruit", (0, 0, 255))  # Red
     food_counts['fish'] = detect_food_type(fish_icon, "fish", (255, 0, 0))  # Blue
     food_counts['wild'] = detect_food_type(wild_icon, "wild", (255, 0, 255))  # Magenta
+    food_counts['rat'] = detect_food_type(rat_icon, "rat", (128, 128, 128))  # Gray
     
     # Save the image with bounding boxes
     output_path = get_output_path(image_path, "food_detected")
@@ -727,6 +747,11 @@ def process_grid(grid_image_path):
                 
                 # Process the card
                 card_result = process_card(card_path)
+                
+                # Skip if bird name is empty or just whitespace
+                if not card_result['bird_name'] or card_result['bird_name'].isspace():
+                    print(f"Skipping card at position ({row_idx}, {col_idx}) - no bird name detected")
+                    continue
                 
                 # Store the result with position information
                 position_key = f"row_{row_idx}_col_{col_idx}"
