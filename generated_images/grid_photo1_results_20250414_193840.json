@@ -1,0 +1,715 @@
+{
+  "row_0_col_0": {
+    "position": {
+      "row": 0,
+      "column": 0
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r0_c0.jpg",
+    "data": {
+      "bird_name": "GREY HERON",
+      "victory_points": "3",
+      "egg_count": 2,
+      "food_requirements": {
+        "fish": 2
+      },
+      "habitats": {
+        "wetland": true,
+        "prairie": false,
+        "forest": false
+      },
+      "extracted_text": ".\n\nGReY HERON.\n\nCHERER\n\n*@+-@\n\nf#\n\nwt oad\n\n#4\n\nee\n\n- \u00a3\n\n(.\\\n\n850M\n\n<a\n\nWHEN PLAYED: Place this bird sideways, so that\n\nit covers 2 spaces. Pay the lower egg cost.\n\nebrie an thes\n\n@\n",
+      "summary_image": "generated_images\\grid_photo1_card_r0_c0_summary.jpg",
+      "vp_debug_info": {
+        "value": "3",
+        "method": "Contour analysis on Binary Inverse threshold",
+        "candidates": {
+          "3": 5,
+          "7": 3
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_0_col_1": {
+    "position": {
+      "row": 0,
+      "column": 1
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r0_c1.jpg",
+    "data": {
+      "bird_name": "CARRION CROW",
+      "victory_points": "3",
+      "egg_count": 2,
+      "food_requirements": {
+        "worm": 1,
+        "wild": 1
+      },
+      "habitats": {
+        "wetland": true,
+        "prairie": true,
+        "forest": false
+      },
+      "extracted_text": "CARRION CROW\n\ncoOnmone\n\n+d\n\nae\n\nWit\n\nae\n\n=\n\n\u2014=\u2014\u2014\n\nSeem\n\nROUND END: Choose an\n\n| player {including\n\nourself). Cache | <i>\n\nrom the supply on this\n\n!\n\nird for each E33 that player has.\n\nf\n\ne\n\nIt\n\n\u201c+\n\nit\n\nCNG, GEL tS\n\nendl uname ateusse\n\n\u00ae\n",
+      "summary_image": "generated_images\\grid_photo1_card_r0_c1_summary.jpg",
+      "vp_debug_info": {
+        "value": "3",
+        "method": "PSM mode 13 on Binary Inverse threshold",
+        "candidates": {
+          "3": 3
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_0_col_2": {
+    "position": {
+      "row": 0,
+      "column": 2
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r0_c2.jpg",
+    "data": {
+      "bird_name": "GRIFFON VULTURE",
+      "victory_points": "1",
+      "egg_count": 1,
+      "food_requirements": {},
+      "habitats": {
+        "wetland": false,
+        "prairie": true,
+        "forest": false
+      },
+      "extracted_text": "GRIFFON VULTURE\n\ner\n\nft\n\nST i, \u00ab\n\nAt\n\ntery?\n\nrf\n\n252M\n\na\n\nROUND END: Choose any 1 player (including:\n\nourself). Cache 1 <a> trom the supply on this\n\n!\n\nird for each E23 that player has.\n\n~\n\neoregedah\n\n@\n",
+      "summary_image": "generated_images\\grid_photo1_card_r0_c2_summary.jpg",
+      "vp_debug_info": {
+        "value": "1",
+        "method": "PSM mode 13 on Binary Inverse threshold",
+        "candidates": {
+          "1": 5,
+          "4": 3
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_0_col_3": {
+    "position": {
+      "row": 0,
+      "column": 3
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r0_c3.jpg",
+    "data": {
+      "bird_name": "REDBACKED SHRIKE",
+      "victory_points": "3",
+      "egg_count": 2,
+      "food_requirements": {
+        "worm": 1,
+        "wild": 1,
+        "rat": 1
+      },
+      "habitats": {
+        "wetland": false,
+        "prairie": true,
+        "forest": false
+      },
+      "extracted_text": "RED-BACKED SHRIKE\n\nQA\n\nMO\n\nLgtt\u00ae\n\n4]\n\n2\n\nSZ\n\n-\n\n\\\n\n-\n\nPes\n",
+      "summary_image": "generated_images\\grid_photo1_card_r0_c3_summary.jpg",
+      "vp_debug_info": {
+        "value": "3",
+        "method": "Contour analysis on Binary Inverse threshold",
+        "candidates": {
+          "3": 5,
+          "5": 3
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_0_col_4": {
+    "position": {
+      "row": 0,
+      "column": 4
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r0_c4.jpg",
+    "data": {
+      "bird_name": "COMMON KINGFISHER",
+      "victory_points": "4",
+      "egg_count": 5,
+      "food_requirements": {
+        "worm": 1,
+        "fish": 2
+      },
+      "habitats": {
+        "wetland": true,
+        "prairie": false,
+        "forest": false
+      },
+      "extracted_text": "COMMON KINGFISHER\n\nly bpehe\n\n?\n\na\n\nee\n\n#d\n\nides\n\nEs\n\nthe\n\na:\n",
+      "summary_image": "generated_images\\grid_photo1_card_r0_c4_summary.jpg",
+      "vp_debug_info": {
+        "value": "4",
+        "method": "Contour analysis on Binary Inverse threshold",
+        "candidates": {
+          "4": 9
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_0_col_5": {
+    "position": {
+      "row": 0,
+      "column": 5
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r0_c5.jpg",
+    "data": {
+      "bird_name": "MUTE SWAN",
+      "victory_points": "4",
+      "egg_count": 3,
+      "food_requirements": {
+        "wheat": 1,
+        "worm": 1,
+        "wild": 1
+      },
+      "habitats": {
+        "wetland": true,
+        "prairie": false,
+        "forest": false
+      },
+      "extracted_text": "MUTE SWAN\n\na\n\nolar\n\nGH\n\naly,\n\nry\n\nag\n\nes\n\n-\n\nNsw arte\n\n=~ =\n\n\u2014* 20cm\n\na\n\nAQ\n\ncH\n\nHUD MIO Tt\n\nHie\n\njt\n\nWUE\n",
+      "summary_image": "generated_images\\grid_photo1_card_r0_c5_summary.jpg",
+      "vp_debug_info": {
+        "value": "4",
+        "method": "Contour analysis on Binary Inverse threshold",
+        "candidates": {
+          "4": 6,
+          "7": 3
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_1_col_0": {
+    "position": {
+      "row": 1,
+      "column": 0
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r1_c0.jpg",
+    "data": {
+      "bird_name": "REDLEGGED PARTRIDGE",
+      "victory_points": "1",
+      "egg_count": 6,
+      "food_requirements": {
+        "wheat": 3
+      },
+      "habitats": {
+        "wetland": false,
+        "prairie": true,
+        "forest": false
+      },
+      "extracted_text": "RED-LEGGED PARTRIDGE\n\nSt $y\n\nOg\n\nxs,\n\nx\\\n\n\\\\:\n\nv4\n\n\\\\\n\niT)\n\na6\n\nWik\n\n= =\n\n48cm\n\ni\n",
+      "summary_image": "generated_images\\grid_photo1_card_r1_c0_summary.jpg",
+      "vp_debug_info": {
+        "value": "1",
+        "method": "PSM mode 13 on Binary Inverse threshold",
+        "candidates": {
+          "1": 2
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_1_col_1": {
+    "position": {
+      "row": 1,
+      "column": 1
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r1_c1.jpg",
+    "data": {
+      "bird_name": "LESSER WHITETHROAT",
+      "victory_points": "0",
+      "egg_count": 2,
+      "food_requirements": {
+        "worm": 1,
+        "fruit": 1
+      },
+      "habitats": {
+        "wetland": false,
+        "prairie": true,
+        "forest": true
+      },
+      "extracted_text": "|\n\nLESSER WHITETHROAT\n\n CHPALCLL\n\n2\n\n\u00a9\n\n6a\n\n=\n\n18cM_\n\n<a\n\n\"ROUND ED: Choc dic wk nolay\n\n1s on-each bird in that habitat.\n\nyr The gottus acne Slee means.\u2019\n\nveoodlane! suite.\u201d\n\n@\n",
+      "summary_image": "generated_images\\grid_photo1_card_r1_c1_summary.jpg",
+      "vp_debug_info": {
+        "value": "0",
+        "method": "Contour analysis on Binary Inverse threshold",
+        "candidates": {
+          "0": 8
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_1_col_2": {
+    "position": {
+      "row": 1,
+      "column": 2
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r1_c2.jpg",
+    "data": {
+      "bird_name": "EURASIAN MAGPIE",
+      "victory_points": "1",
+      "egg_count": 3,
+      "food_requirements": {
+        "worm": 1,
+        "wild": 1
+      },
+      "habitats": {
+        "wetland": false,
+        "prairie": true,
+        "forest": false
+      },
+      "extracted_text": "EURASIAN MAGPIE\n\nPica pica\n\nlay t\n\nedi\n\n\u2018ug\n\naa\n\nJ6CH\n\n= >\n\nROUND END: Choose 1 other player. For each\n\naction cube on their\n\n, cache 1 \u00ae from the\n\nsupply on any of your birds\n\nae bh\n\ncd\n\nHEME A\n",
+      "summary_image": "generated_images\\grid_photo1_card_r1_c2_summary.jpg",
+      "vp_debug_info": {
+        "value": "1",
+        "method": "Contour analysis on Binary Inverse threshold",
+        "candidates": {
+          "1": 8
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_1_col_3": {
+    "position": {
+      "row": 1,
+      "column": 3
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r1_c3.jpg",
+    "data": {
+      "bird_name": "LITTLE OWL",
+      "victory_points": "4",
+      "egg_count": 2,
+      "food_requirements": {
+        "worm": 1,
+        "rat": 1
+      },
+      "habitats": {
+        "wetland": false,
+        "prairie": true,
+        "forest": true
+      },
+      "extracted_text": "LITTLE OWL\n\nhy tae,\n\nhe\n\n\\ oer\n\nyen\n\nNat St]\n\nre\n\nWie. Bi\n\niy\n\nrps mf\n\nwt\n\nTees\n\nbh\n\nead\n\nAk\n\n>\n\na4\n\nry g\n\nti\n\nAn\n\n= <=\n\n560M\n\nae\n\nUr\n\nwy\n\naad\n",
+      "summary_image": "generated_images\\grid_photo1_card_r1_c3_summary.jpg",
+      "vp_debug_info": {
+        "value": "4",
+        "method": "Contour analysis on Binary Inverse threshold",
+        "candidates": {
+          "4": 6
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_1_col_4": {
+    "position": {
+      "row": 1,
+      "column": 4
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r1_c4.jpg",
+    "data": {
+      "bird_name": "COMMON GUCK00",
+      "victory_points": "4",
+      "egg_count": 0,
+      "food_requirements": {
+        "worm": 2
+      },
+      "habitats": {
+        "wetland": false,
+        "prairie": true,
+        "forest": true
+      },
+      "extracted_text": "COMMON Cuckoo\n\nCONOMA\n\n\u00a9\n\nsal\n\nTCM\n\n=a\n\nONCE BETWEEN TURNS: When another player\n\non\n\ntakes the \u201clay eggs\u201d action, this bird lays 1\n\nanother bitd with a \u00a9 or &) nest.\n\nal\n\ncupeoior cut peter\n\nred DarESHeS age MEK asd gio fos\n\n@\n",
+      "summary_image": "generated_images\\grid_photo1_card_r1_c4_summary.jpg",
+      "vp_debug_info": {
+        "value": "4",
+        "method": "Contour analysis on Binary Inverse threshold",
+        "candidates": {
+          "4": 2
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_1_col_5": {
+    "position": {
+      "row": 1,
+      "column": 5
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r1_c5.jpg",
+    "data": {
+      "bird_name": "DUNNOCK",
+      "victory_points": "1",
+      "egg_count": 4,
+      "food_requirements": {
+        "wheat": 1,
+        "worm": 1
+      },
+      "habitats": {
+        "wetland": false,
+        "prairie": false,
+        "forest": true
+      },
+      "extracted_text": "DUNNOCK\n\nhay, +\n\nSy\n\nth\n\nran\n\nfat\n\n&@\n\nwit.\n\nne\n\nmw 200M\n\na\n\nROUND END: Choose 1 other player. For each\n\naction cube on their\n\nfay 1 on this bird.\n\nPet yoea is alten have\n\n@\n",
+      "summary_image": "generated_images\\grid_photo1_card_r1_c5_summary.jpg",
+      "vp_debug_info": {
+        "value": "1",
+        "method": "PSM mode 13 on Binary Inverse threshold",
+        "candidates": {
+          "1": 2
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_2_col_0": {
+    "position": {
+      "row": 2,
+      "column": 0
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r2_c0.jpg",
+    "data": {
+      "bird_name": "BLACKTHROATED DIVER",
+      "victory_points": "2",
+      "egg_count": 1,
+      "food_requirements": {
+        "fish": 2,
+        "rat": 1
+      },
+      "habitats": {
+        "wetland": true,
+        "prairie": false,
+        "forest": false
+      },
+      "extracted_text": "BLACK-THROATED DIVER\n\nPte\n\nO00\\\\ ih\n\nCo\n\nom\n\na\n\nanther specie\n\naster yard af the,\n",
+      "summary_image": "generated_images\\grid_photo1_card_r2_c0_summary.jpg",
+      "vp_debug_info": {
+        "value": "2",
+        "method": "Contour analysis on Binary Inverse threshold",
+        "candidates": {
+          "2": 6,
+          "5": 3
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_2_col_1": {
+    "position": {
+      "row": 2,
+      "column": 1
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r2_c1.jpg",
+    "data": {
+      "bird_name": "SOUARCO HERON",
+      "victory_points": "3",
+      "egg_count": 2,
+      "food_requirements": {
+        "worm": 1,
+        "fish": 1,
+        "rat": 1
+      },
+      "habitats": {
+        "wetland": true,
+        "prairie": false,
+        "forest": false
+      },
+      "extracted_text": "SQUACCO HERON\n\na\n\nwie\n\nr\n\na\n\n3\n\na\n\n$8\n\n= <=\n\n86CM\n\nLan\n\naay\n\nacinccu beraes erect their\n",
+      "summary_image": "generated_images\\grid_photo1_card_r2_c1_summary.jpg",
+      "vp_debug_info": {
+        "value": "3",
+        "method": "Contour analysis on Binary Inverse threshold",
+        "candidates": {
+          "3": 8
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_2_col_2": {
+    "position": {
+      "row": 2,
+      "column": 2
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r2_c2.jpg",
+    "data": {
+      "bird_name": "GREAT CRESTED GREBE",
+      "victory_points": "3",
+      "egg_count": 2,
+      "food_requirements": {
+        "fish": 2
+      },
+      "habitats": {
+        "wetland": true,
+        "prairie": false,
+        "forest": false
+      },
+      "extracted_text": "GREAT CRESTED GREBE\n\n>\n\n1, CLIALALUA\n\n\u00bbt-m\n\nae\n\nae\n\n65cm\n\n= =\n\n\u2014\u2014\n\nGreat\n\nt\n\nparenss |\n\n10\n\nI\n\n\u201c\n\naks and\n\nifs\n\nae indhadasly\n",
+      "summary_image": "generated_images\\grid_photo1_card_r2_c2_summary.jpg",
+      "vp_debug_info": {
+        "value": "3",
+        "method": "2x scaled Binary Inverse threshold",
+        "candidates": {
+          "3": 4
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_2_col_3": {
+    "position": {
+      "row": 2,
+      "column": 3
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r2_c3.jpg",
+    "data": {
+      "bird_name": "THEKLA'S LARK",
+      "victory_points": "4",
+      "egg_count": 3,
+      "food_requirements": {
+        "wheat": 1,
+        "worm": 2
+      },
+      "habitats": {
+        "wetland": false,
+        "prairie": true,
+        "forest": false
+      },
+      "extracted_text": "THEKLA'S LARK\n\ntheklae\n\nLy Hat's,\n\naa\n\nae ay\n\na\n\nae\n\n=\n\n<=\u2014 =\n\nhoki\n\nnad Ey\n\nGertnin 2auiegist A\n\nHf\n\na\n\n\u00a5\n\nBrebin citer Lis sister\n",
+      "summary_image": "generated_images\\grid_photo1_card_r2_c3_summary.jpg",
+      "vp_debug_info": {
+        "value": "4",
+        "method": "Contour analysis on Binary Inverse threshold",
+        "candidates": {
+          "4": 6
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_2_col_4": {
+    "position": {
+      "row": 2,
+      "column": 4
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r2_c4.jpg",
+    "data": {
+      "bird_name": "FURASIGN NUTCRACKER",
+      "victory_points": "0",
+      "egg_count": 2,
+      "food_requirements": {
+        "wheat": 1
+      },
+      "habitats": {
+        "wetland": false,
+        "prairie": false,
+        "forest": true
+      },
+      "extracted_text": "EURASIAN NUTCRACKER\n\nRY\n\ney\n\niy\n\n<\n\noS\n\nnee\n\nSW\n\n\u2018\u201cY\n\nFe\n\n%y\n\nPe\n\n\u201c4\n\n=\n\nat\n\nZt\n\nPy\n\nAe\n\nA\n\nrl\n\na ACRINS\n\nfeve f\n\nserved troveling as far as\n\nTe RIP IO LC\n\nhe\n\n@\n",
+      "summary_image": "generated_images\\grid_photo1_card_r2_c4_summary.jpg",
+      "vp_debug_info": {
+        "value": "0",
+        "method": "Contour analysis on Binary Inverse threshold",
+        "candidates": {
+          "0": 5,
+          "5": 3
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_2_col_5": {
+    "position": {
+      "row": 2,
+      "column": 5
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r2_c5.jpg",
+    "data": {
+      "bird_name": "EURASIAN NUTHATCH",
+      "victory_points": "3",
+      "egg_count": 3,
+      "food_requirements": {
+        "wheat": 1,
+        "worm": 1
+      },
+      "habitats": {
+        "wetland": false,
+        "prairie": false,
+        "forest": true
+      },
+      "extracted_text": "ne\n\no\n\nEURASIA\n\nN NUTHATCH\n\neuropea,\n\nhay $s\n\nae}\n\na\n\n250M\n\n\u2014\u2014\n\nou\n\nPPC OleS\n",
+      "summary_image": "generated_images\\grid_photo1_card_r2_c5_summary.jpg",
+      "vp_debug_info": {
+        "value": "3",
+        "method": "PSM mode 13 on Binary Inverse threshold",
+        "candidates": {
+          "3": 3
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_3_col_0": {
+    "position": {
+      "row": 3,
+      "column": 0
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r3_c0.jpg",
+    "data": {
+      "bird_name": "COAL TIT",
+      "victory_points": "1",
+      "egg_count": 6,
+      "food_requirements": {
+        "wheat": 1,
+        "worm": 1
+      },
+      "habitats": {
+        "wetland": false,
+        "prairie": false,
+        "forest": true
+      },
+      "extracted_text": "COAL TIT\n\nPeriparun ater\n\nih\n\nea\n\nbn\n\nfa\n\naa\n\n8\n",
+      "summary_image": "generated_images\\grid_photo1_card_r3_c0_summary.jpg",
+      "vp_debug_info": {
+        "value": "1",
+        "method": "Pixel ratio analysis (0.041)",
+        "candidates": {},
+        "white_pixel_ratio": 0.04106916398400156
+      }
+    }
+  },
+  "row_3_col_1": {
+    "position": {
+      "row": 3,
+      "column": 1
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r3_c1.jpg",
+    "data": {
+      "bird_name": "BLACK REDSTART",
+      "victory_points": "0",
+      "egg_count": 4,
+      "food_requirements": {
+        "wheat": 1,
+        "worm": 1,
+        "fruit": 1
+      },
+      "habitats": {
+        "wetland": false,
+        "prairie": true,
+        "forest": false
+      },
+      "extracted_text": "ppatk REDSTAR\n\nT\n\nAOA\n\nbay t +96\n\ni)\n\na6\n\n- Ee\n\n24cm\n\n\u2014=\u2014 =\n\nROUND END: Choose o habitat with no\u201d. Lay\n\n1 \u201cYon each bird in that habitat.\n\ni\n\nf f\n",
+      "summary_image": "generated_images\\grid_photo1_card_r3_c1_summary.jpg",
+      "vp_debug_info": {
+        "value": "0",
+        "method": "Contour analysis on Binary Inverse threshold",
+        "candidates": {
+          "0": 8
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_3_col_2": {
+    "position": {
+      "row": 3,
+      "column": 2
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r3_c2.jpg",
+    "data": {
+      "bird_name": "COMMON GOLDENEYE",
+      "victory_points": "2",
+      "egg_count": 4,
+      "food_requirements": {
+        "worm": 1,
+        "fish": 1
+      },
+      "habitats": {
+        "wetland": true,
+        "prairie": false,
+        "forest": true
+      },
+      "extracted_text": "ood COMMON GOLDENEYE\n\nyt\n\n2\n\n4\n\nqo)\n\n\u00e9\u00a2 gg\n\ngee\n\n&$\n\n73CM\n\n==\n\non this bird for each other\n\nROUND END: Loy 1\n\nbird with o 4-) nest that you have\n\nwe\n\noh\n",
+      "summary_image": "generated_images\\grid_photo1_card_r3_c2_summary.jpg",
+      "vp_debug_info": {
+        "value": "2",
+        "method": "Contour analysis on Binary Inverse threshold",
+        "candidates": {
+          "2": 8
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_3_col_3": {
+    "position": {
+      "row": 3,
+      "column": 3
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r3_c3.jpg",
+    "data": {
+      "bird_name": "SAVI'S WARBLER",
+      "victory_points": "1",
+      "egg_count": 4,
+      "food_requirements": {
+        "worm": 1
+      },
+      "habitats": {
+        "wetland": true,
+        "prairie": false,
+        "forest": false
+      },
+      "extracted_text": "SAVI'S WARBLER\n\n\u201c Daf,\n\nGe\n\na\n\n200M\n\na\n\nPads Ss\n\nHef\n\ni, but\n",
+      "summary_image": "generated_images\\grid_photo1_card_r3_c3_summary.jpg",
+      "vp_debug_info": {
+        "value": "1",
+        "method": "Contour analysis on Binary Inverse threshold",
+        "candidates": {
+          "1": 9
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  },
+  "row_3_col_4": {
+    "position": {
+      "row": 3,
+      "column": 4
+    },
+    "card_image_path": "generated_images\\grid_photo1_card_r3_c4.jpg",
+    "data": {
+      "bird_name": "EURASIAN JAY",
+      "victory_points": "4",
+      "egg_count": 3,
+      "food_requirements": {
+        "wheat": 1,
+        "worm": 1,
+        "wild": 1
+      },
+      "habitats": {
+        "wetland": false,
+        "prairie": false,
+        "forest": true
+      },
+      "extracted_text": "j\n\ni\n\nEURASIAN JAY\n\ni\n\n\u00a9} |\n\nglandanius\n\nbyt Q+@\n\n4\n\n(\u201c)\n\n6\n\n\u00e9\n\n60M\n\n\u2014\u2014.\n\n==\n\n=\n\nas The\n\nay for dhs needs by Aasaneideng Loris\n\nte\n\n\u00ae\n",
+      "summary_image": "generated_images\\grid_photo1_card_r3_c4_summary.jpg",
+      "vp_debug_info": {
+        "value": "4",
+        "method": "Contour analysis on Binary Inverse threshold",
+        "candidates": {
+          "4": 8
+        },
+        "white_pixel_ratio": null
+      }
+    }
+  }
+}

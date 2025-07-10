@@ -39,6 +39,7 @@ def check_template_files():
         "fish_template.jpg",
         "wild_template.jpg",
         "rat_template.jpg",
+        "no_food_template.jpg",
         "wetland_template.jpg",
         "prairie_template.jpg",
         "forest_template.jpg"
@@ -360,9 +361,46 @@ def detect_food(image_path):
     fish_icon = cv2.imread('fish_template.jpg', 0)
     wild_icon = cv2.imread('wild_template.jpg', 0)
     rat_icon = cv2.imread('rat_template.jpg', 0)
+    no_food_icon = cv2.imread('no_food_template.jpg', 0)
+    
+    # Individual thresholds for each food type - adjust these as needed
+    food_thresholds = {
+        'no_food': 0.82,    # Threshold for no food template
+        'wheat': 0.82,      # Threshold for wheat detection
+        'worm': 0.82,       # Threshold for worm detection
+        'fruit': 0.82,      # Threshold for fruit detection
+        'fish': 0.82,       # Threshold for fish detection
+        'wild': 0.75,       # Threshold for wild detection
+        'rat': 0.85         # Threshold for rat detection
+    }
     
     # Convert ROI to grayscale
     gray_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+    
+    # First, check for the no food template
+    if no_food_icon is not None:
+        no_food_result = cv2.matchTemplate(gray_roi, no_food_icon, cv2.TM_CCOEFF_NORMED)
+        no_food_threshold = food_thresholds['no_food']
+        no_food_locations = np.where(no_food_result >= no_food_threshold)
+        no_food_locations = list(zip(*no_food_locations[::-1]))
+        
+        if no_food_locations:
+            # No food template found - this bird requires no food
+            # Draw rectangle around the no food symbol
+            w, h = no_food_icon.shape[::-1]
+            for loc in no_food_locations:
+                top_left = loc
+                bottom_right = (top_left[0] + w, top_left[1] + h)
+                cv2.rectangle(roi, top_left, bottom_right, (0, 255, 255), 2)  # Yellow color
+                cv2.putText(roi, "no_food", (top_left[0], top_left[1] - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)
+            
+            # Save the image with bounding boxes
+            output_path = get_output_path(image_path, "food_detected")
+            cv2.imwrite(output_path, image)
+            
+            # Return empty dictionary - no food required
+            return {}, output_path
     
     # Dictionary to store food counts and their locations
     food_counts = {
@@ -374,9 +412,8 @@ def detect_food(image_path):
         'rat': 0
     }
     
-    def detect_food_type(template, food_name, color):
+    def detect_food_type(template, food_name, color, threshold):
         result = cv2.matchTemplate(gray_roi, template, cv2.TM_CCOEFF_NORMED)
-        threshold = 0.82  # Slightly lower threshold to catch more potential matches
         locations = np.where(result >= threshold)
         locations = list(zip(*locations[::-1]))  # Convert to list of (x, y) positions
         
@@ -440,13 +477,13 @@ def detect_food(image_path):
         
         return len(filtered_locations)
     
-    # Detect each food type with a different color
-    food_counts['wheat'] = detect_food_type(wheat_icon, "wheat", (0, 255, 0))  # Green
-    food_counts['worm'] = detect_food_type(worm_icon, "worm", (0, 255, 255))  # Yellow
-    food_counts['fruit'] = detect_food_type(fruit_icon, "fruit", (0, 0, 255))  # Red
-    food_counts['fish'] = detect_food_type(fish_icon, "fish", (255, 0, 0))  # Blue
-    food_counts['wild'] = detect_food_type(wild_icon, "wild", (255, 0, 255))  # Magenta
-    food_counts['rat'] = detect_food_type(rat_icon, "rat", (128, 128, 128))  # Gray
+    # Detect each food type with a different color and threshold
+    food_counts['wheat'] = detect_food_type(wheat_icon, "wheat", (0, 255, 0), food_thresholds['wheat'])  # Green
+    food_counts['worm'] = detect_food_type(worm_icon, "worm", (0, 255, 255), food_thresholds['worm'])  # Yellow
+    food_counts['fruit'] = detect_food_type(fruit_icon, "fruit", (0, 0, 255), food_thresholds['fruit'])  # Red
+    food_counts['fish'] = detect_food_type(fish_icon, "fish", (255, 0, 0), food_thresholds['fish'])  # Blue
+    food_counts['wild'] = detect_food_type(wild_icon, "wild", (255, 0, 255), food_thresholds['wild'])  # Magenta
+    food_counts['rat'] = detect_food_type(rat_icon, "rat", (128, 128, 128), food_thresholds['rat'])  # Gray
     
     # Save the image with bounding boxes
     output_path = get_output_path(image_path, "food_detected")
@@ -827,6 +864,87 @@ def save_results_to_json(results, image_path):
     print(f"Saved results to {json_path}")
     return json_path
 
+def generate_sql_insert_statements(results):
+    """
+    Generate SQL insert statements for the cards table based on processing results
+    
+    Args:
+        results: Dictionary of processing results from process_grid
+        
+    Returns:
+        Path to the generated SQL file
+    """
+    output_dir = ensure_output_dir()
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    sql_path = os.path.join(output_dir, f"insert_cards_{timestamp}.sql")
+    
+    with open(sql_path, 'w') as f:
+        # Write header comment
+        f.write("-- Generated SQL insert statements for Wingspan cards\n")
+        f.write("-- Generated at: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n\n")
+        
+        for position, card_data in results.items():
+            data = card_data['data']
+            bird_name = data['bird_name'].replace("'", "''")  # Escape single quotes for SQL
+            
+            # Convert food requirements to integers, defaulting to 0 if not present
+            fish_required = data['food_requirements'].get('fish', 0)
+            worm_required = data['food_requirements'].get('worm', 0)
+            fruit_required = data['food_requirements'].get('fruit', 0)
+            wheat_required = data['food_requirements'].get('wheat', 0)
+            wild_required = data['food_requirements'].get('wild', 0)
+            
+            # Get victory points, converting to integer and handling any non-numeric values
+            try:
+                victory_points = int(data['victory_points'])
+            except (ValueError, TypeError):
+                victory_points = 0
+            
+            # Get habitats as boolean values
+            wetlands_habitat = 'true' if data['habitats']['wetland'] else 'false'
+            prairie_habitat = 'true' if data['habitats']['prairie'] else 'false'
+            forest_habitat = 'true' if data['habitats']['forest'] else 'false'
+            
+            # Generate image URL
+            safe_bird_name = re.sub(r'[^a-zA-Z0-9_]', '', bird_name.replace(' ', '_')).upper()
+            image_url = f"https://mqhhqhnqubitqfvqwalp.supabase.co/storage/v1/object/public/wingspan//{safe_bird_name}.jpg"
+            
+            # Create the SQL insert statement
+            sql = f"""INSERT INTO cards (
+                name, 
+                victory_points,
+                wetlands_habitat,
+                prairie_habitat,
+                forest_habitat,
+                egg_count,
+                fish_required,
+                worm_required,
+                fruit_required,
+                wheat_required,
+                wild_required,
+                description_text,
+                image_url
+            ) VALUES (
+                '{bird_name}',
+                {victory_points},
+                {wetlands_habitat},
+                {prairie_habitat},
+                {forest_habitat},
+                {data['egg_count']},
+                {fish_required},
+                {worm_required},
+                {fruit_required},
+                {wheat_required},
+                {wild_required},
+                '{data['extracted_text'][:500].replace("'", "''")}',
+                '{image_url}'
+            );
+            """
+            f.write(sql + "\n")
+    
+    print(f"Generated SQL insert statements in: {sql_path}")
+    return sql_path
+
 if __name__ == "__main__":
     # Check if we're processing a single card or a grid
     if len(sys.argv) < 2:
@@ -854,9 +972,13 @@ if __name__ == "__main__":
             # Save results to JSON
             json_path = save_results_to_json(result, image_path)
             
+            # Generate SQL insert statements
+            sql_path = generate_sql_insert_statements(result)
+            
             print("\n=========================================")
             print(f"SUMMARY: Processed {len(result)} cards from grid")
             print(f"Complete results saved to: {json_path}")
+            print(f"SQL insert statements saved to: {sql_path}")
             print("=========================================\n")
             
             # Print a brief summary of each card
